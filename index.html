@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdapKi — Acompañamiento estratégico en IA para líderes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ───────────────────────────────────── */
+    :root {
+      --navy:   #1F3172;
+      --purple: #9063CD;
+      --orange: #E5751F;
+      --lgray:  #C6C9CA;
+      --blue:   #1E63B4;
+      --lilac:  #B49FDA;
+      --white:  #FFFFFF;
+      --off:    #F8F9FC;
+      --text:   #1A1A2E;
+      --muted:  #5A5A72;
+      --border: rgba(31,49,114,.10);
+      --radius: 12px;
+      --shadow: 0 2px 20px rgba(31,49,114,.08);
+    }
+
+    /* ── RESET ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Roboto', sans-serif; color: var(--text); background: var(--white); line-height: 1.65; }
+    h1,h2,h3,h4,h5 { font-family: 'Montserrat', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── UTILITIES ───────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+    .section { padding: 92px 0; background: var(--white); }
+    .section--alt { background: var(--off); }
+    .section-label { text-align: center; margin-bottom: 14px; }
+    .section-title { font-size: clamp(1.7rem,3vw,2.5rem); font-weight: 800; text-align: center; color: var(--navy); margin-bottom: 16px; line-height: 1.2; }
+    .section-sub { text-align: center; color: var(--muted); max-width: 600px; margin: 0 auto 56px; font-size: 1.02rem; line-height: 1.75; }
+    .chip { display: inline-block; font-family: 'Montserrat', sans-serif; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px; border-radius: 40px; margin-bottom: 18px; }
+    .chip--purple { background: rgba(144,99,205,.1); color: var(--purple); }
+    .chip--navy   { background: rgba(31,49,114,.08); color: var(--navy); }
+    .chip--orange { background: rgba(229,117,31,.1); color: var(--orange); }
+    .btn { display: inline-block; padding: 14px 30px; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: .9rem; transition: all .2s; cursor: pointer; border: none; }
+    .btn-navy { background: var(--navy); color: var(--white); }
+    .btn-navy:hover { background: #162459; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(31,49,114,.25); }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-orange:hover { background: #cb6318; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(229,117,31,.3); }
+    .btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+    .btn-outline:hover { background: var(--navy); color: var(--white); }
+    .divider { width: 48px; height: 3px; background: var(--purple); border-radius: 2px; margin: 0 auto 32px; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .55s, transform .55s; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (max-width: 768px) { .section { padding: 64px 0; } .hide-mob { display: none; } }
+
+    /* ── NAVBAR ──────────────────────────────────── */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+    .nav-logo { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--navy); letter-spacing: -.5px; }
+    .nav-logo .ki { color: var(--purple); }
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-links a { font-family: 'Montserrat', sans-serif; font-size: .83rem; font-weight: 600; color: var(--muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--navy); }
+    .nav-cta { background: var(--navy) !important; color: var(--white) !important; padding: 10px 20px; border-radius: 7px; }
+    .nav-cta:hover { background: var(--purple) !important; }
+
+    /* ── HERO ────────────────────────────────────── */
+    .hero { padding: 130px 0 96px; background: var(--white); position: relative; overflow: hidden; }
+    /* subtle geometric accent top-right */
+    .hero::before { content:''; position:absolute; top:-120px; right:-120px; width:500px; height:500px; background: radial-gradient(circle, rgba(144,99,205,.08) 0%, transparent 70%); pointer-events:none; }
+    .hero::after  { content:''; position:absolute; bottom:-80px; left:-80px; width:320px; height:320px; background: radial-gradient(circle, rgba(31,49,114,.05) 0%, transparent 70%); pointer-events:none; }
+    .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; position: relative; z-index: 1; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+    .hero-eyebrow-line { width: 32px; height: 2px; background: var(--purple); border-radius: 2px; }
+    .hero-eyebrow span { font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); }
+    .hero h1 { font-size: clamp(2rem,4vw,3.1rem); font-weight: 800; color: var(--navy); line-height: 1.13; margin-bottom: 22px; }
+    .hero h1 .accent { color: var(--purple); }
+    .hero-sub { font-size: 1.05rem; color: var(--muted); line-height: 1.8; margin-bottom: 36px; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    /* right panel */
+    .hero-panel { background: var(--off); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px; }
+    .hero-panel-title { font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); margin-bottom: 24px; }
+    .hero-pillars { display: flex; flex-direction: column; gap: 18px; }
+    .hero-pillar { display: flex; gap: 14px; align-items: flex-start; }
+    .hero-pillar-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--white); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; margin-top: 1px; box-shadow: var(--shadow); }
+    .hero-pillar-text strong { display: block; font-family: 'Montserrat', sans-serif; font-size: .88rem; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+    .hero-pillar-text span { font-size: .84rem; color: var(--muted); line-height: 1.5; }
+    .hero-quote { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .hero-quote p { font-size: .88rem; color: var(--muted); font-style: italic; line-height: 1.6; }
+    .hero-quote p strong { color: var(--navy); font-style: normal; }
+    @media (max-width: 860px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .hero { padding: 105px 0 72px; } }
+
+    /* ── TRUST ───────────────────────────────────── */
+    .trust { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 24px 0; background: var(--white); }
+    .trust-inner { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .trust-label { font-family: 'Montserrat', sans-serif; font-size: .7rem; font-weight: 700; color: var(--lgray); letter-spacing: .1em; text-transform: uppercase; }
+    .trust-sep { color: var(--lgray); }
+    .trust-item { font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 600; color: var(--lgray); }
+
+    /* ── PROBLEMA ────────────────────────────────── */
+    .problema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+    .problema-left h2 { font-size: clamp(1.5rem,2.5vw,2.1rem); font-weight: 800; color: var(--navy); margin-bottom: 20px; line-height: 1.25; }
+    .problema-left p { color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
+    .problema-left strong { color: var(--text); }
+    .problema-items { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .problema-item { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--purple); border-radius: 8px; }
+    .pi-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .pi-body strong { display: block; font-family: 'Montserrat', sans-serif; font-size: .85rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .pi-body span { font-size: .85rem; color: var(--muted); line-height: 1.5; }
+    .insight-box { background: var(--navy); border-radius: 14px; padding: 40px 36px; color: var(--white); }
+    .insight-box blockquote { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 700; line-height: 1.45; margin-bottom: 20px; }
+    .insight-box blockquote em { color: var(--lilac); font-style: normal; }
+    .insight-box p { font-size: .9rem; color: rgba(255,255,255,.65); line-height: 1.75; }
+    @media (max-width: 860px) { .problema-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+    /* ── ACOMPAÑAMIENTO ──────────────────────────── */
+    .acomp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .acomp-text h2 { font-size: clamp(1.5rem,2.5vw,2.1rem); font-weight: 800; color: var(--navy); margin-bottom: 18px; line-height: 1.25; }
+    .acomp-text p { color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
+    .acomp-list { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+    .acomp-item { display: flex; gap: 12px; align-items: flex-start; }
+    .acomp-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); flex-shrink: 0; margin-top: 8px; }
+    .acomp-item-text { font-size: .92rem; color: var(--muted); line-height: 1.6; }
+    .acomp-item-text strong { color: var(--navy); font-family: 'Montserrat', sans-serif; font-size: .88rem; }
+    .acomp-visual { background: var(--off); border: 1px solid var(--border); border-radius: 14px; padding: 36px 32px; }
+    .acomp-visual-title { font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); margin-bottom: 28px; }
+    .acomp-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .acomp-tag { display: inline-flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-size: .8rem; font-weight: 600; color: var(--navy); box-shadow: var(--shadow); }
+    .acomp-tag .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .acomp-tag .dot--navy   { background: var(--navy); }
+    .acomp-tag .dot--purple { background: var(--purple); }
+    .acomp-tag .dot--orange { background: var(--orange); }
+    @media (max-width: 860px) { .acomp-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+    /* ── SERVICIOS ───────────────────────────────── */
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .svc { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; position: relative; transition: box-shadow .2s, transform .2s; }
+    .svc:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(31,49,114,.10); }
+    .svc-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; background: var(--border); }
+    .svc-bar--navy   { background: var(--navy); }
+    .svc-bar--purple { background: var(--purple); }
+    .svc-bar--orange { background: var(--orange); }
+    .svc-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 16px; }
+    .svc-icon--navy   { background: rgba(31,49,114,.07); }
+    .svc-icon--purple { background: rgba(144,99,205,.08); }
+    .svc-icon--orange { background: rgba(229,117,31,.08); }
+    .svc h3 { font-size: .95rem; font-weight: 700; color: var(--navy); margin-bottom: 9px; line-height: 1.35; }
+    .svc p  { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+    @media (max-width: 900px) { .services-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
+
+    /* ── PERFILES ────────────────────────────────── */
+    .profiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .profile { border: 1px solid var(--border); border-radius: 14px; padding: 36px 32px; background: var(--white); }
+    .profile-top { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+    .profile-emoji { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .profile-emoji--navy   { background: rgba(31,49,114,.07); }
+    .profile-emoji--purple { background: rgba(144,99,205,.08); }
+    .profile-top h3 { font-size: 1rem; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .profile-top p  { font-size: .8rem; color: var(--muted); margin-top: 3px; }
+    .profile-accent { width: 100%; height: 2px; border-radius: 1px; margin-bottom: 20px; }
+    .profile-accent--navy   { background: linear-gradient(90deg, var(--navy), var(--blue)); }
+    .profile-accent--purple { background: linear-gradient(90deg, var(--purple), var(--lilac)); }
+    .profile-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .profile-list li { display: flex; gap: 10px; align-items: flex-start; font-size: .88rem; color: var(--muted); line-height: 1.5; }
+    .profile-arrow { color: var(--purple); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .profile--navy .profile-arrow { color: var(--navy); }
+    @media (max-width: 700px) { .profiles-grid { grid-template-columns: 1fr; } }
+
+    /* ── MÉTODO / CÓMO TRABAJAMOS ────────────────── */
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; counter-reset: step; }
+    .steps::before { content:''; position:absolute; top:28px; left:calc(12.5% + 14px); right:calc(12.5% + 14px); height:1px; background: linear-gradient(90deg, var(--purple), var(--lilac)); z-index:0; }
+    .step { text-align: center; padding: 0 12px; position: relative; z-index: 1; }
+    .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--white); border: 2px solid var(--purple); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; color: var(--purple); box-shadow: 0 0 0 5px var(--off); }
+    .step h4 { font-size: .9rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .step p  { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+    @media (max-width: 700px) { .steps { grid-template-columns: 1fr 1fr; gap: 28px; } .steps::before { display:none; } }
+    @media (max-width: 440px) { .steps { grid-template-columns: 1fr; } }
+
+    /* ── EQUIPO ──────────────────────────────────── */
+    .team-wrap { max-width: 740px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+    .team-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 32px 28px; text-align: center; transition: box-shadow .2s; }
+    .team-card:hover { box-shadow: 0 8px 32px rgba(31,49,114,.09); }
+    .team-avatar { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), var(--purple)); display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--white); margin: 0 auto 18px; border: 3px solid var(--off); }
+    .team-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .team-role { font-size: .8rem; color: var(--purple); font-weight: 600; font-family: 'Montserrat', sans-serif; margin-bottom: 14px; }
+    .team-card p  { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+    .team-linkedin { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: .8rem; font-weight: 600; color: var(--blue); font-family: 'Montserrat', sans-serif; transition: color .2s; }
+    .team-linkedin:hover { color: var(--navy); }
+    @media (max-width: 580px) { .team-wrap { grid-template-columns: 1fr; } }
+
+    /* ── QUOTE ───────────────────────────────────── */
+    .quote-wrap { max-width: 700px; margin: 0 auto; text-align: center; }
+    .quote-mark { font-size: 3.5rem; color: var(--purple); line-height: .6; margin-bottom: 16px; font-family: Georgia, serif; opacity: .4; }
+    .quote-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.05rem,2vw,1.35rem); font-weight: 600; color: var(--navy); line-height: 1.55; margin-bottom: 20px; }
+    .quote-author { font-size: .82rem; color: var(--muted); }
+
+    /* ── CTA ─────────────────────────────────────── */
+    .cta-sec { background: var(--navy); color: var(--white); padding: 88px 0; text-align: center; position: relative; overflow: hidden; }
+    .cta-sec::before { content:''; position:absolute; top:-100px; right:-100px; width:400px; height:400px; background: radial-gradient(circle, rgba(144,99,205,.2) 0%, transparent 70%); }
+    .cta-sec::after  { content:''; position:absolute; bottom:-80px; left:-80px; width:300px; height:300px; background: radial-gradient(circle, rgba(180,157,250,.12) 0%, transparent 70%); }
+    .cta-sec > .container { position: relative; z-index: 1; }
+    .cta-sec h2 { font-size: clamp(1.7rem,3vw,2.4rem); font-weight: 800; margin-bottom: 16px; }
+    .cta-sec p  { font-size: 1rem; color: rgba(255,255,255,.7); max-width: 530px; margin: 0 auto 36px; line-height: 1.8; }
+    .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: var(--white); color: var(--navy); }
+    .btn-white:hover { background: var(--off); }
+    .cta-note { font-size: .78rem; color: rgba(255,255,255,.4); margin-top: 18px; font-style: italic; }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    .footer { background: #0c1530; color: rgba(255,255,255,.45); padding: 52px 0 28px; }
+    .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-logo { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--white); margin-bottom: 12px; }
+    .footer-logo .ki { color: var(--lilac); }
+    .footer-brand p { font-size: .83rem; line-height: 1.7; max-width: 260px; }
+    .footer-col h4 { font-family: 'Montserrat', sans-serif; font-size: .72rem; font-weight: 700; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .footer-col a  { font-size: .83rem; transition: color .2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.06); padding-top: 22px; display: flex; justify-content: space-between; align-items: center; font-size: .78rem; flex-wrap: wrap; gap: 10px; }
+    @media (max-width: 700px) { .footer-inner { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────── -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Adap<span class="ki">Ki</span></a>
+      <div class="nav-links hide-mob">
+        <a href="#problema">El problema</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#como">Cómo trabajamos</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#contacto" class="nav-cta">Agenda una sesión</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="reveal">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span>Acompañamiento estratégico en IA</span>
+        </div>
+        <h1>La IA no necesita urgencia.<br/>Necesita <span class="accent">orden.</span></h1>
+        <p class="hero-sub">Ayudamos a líderes organizacionales a avanzar con IA desde el criterio: definiendo qué hacer, cómo decidirlo y con qué herramientas. Sin improvisar.</p>
+        <div class="hero-actions">
+          <a href="#contacto" class="btn btn-navy">Agenda una sesión ejecutiva</a>
+          <a href="#servicios" class="btn btn-outline">Ver servicios</a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="hero-panel">
+          <div class="hero-panel-title">Lo que ordenamos juntos</div>
+          <div class="hero-pillars">
+            <div class="hero-pillar">
+              <div class="hero-pillar-icon">🗺️</div>
+              <div class="hero-pillar-text">
+                <strong>Estrategia y hoja de ruta</strong>
+                <span>Qué va primero, qué no y por qué, integrado al negocio.</span>
+              </div>
+            </div>
+            <div class="hero-pillar">
+              <div class="hero-pillar-icon">🛠️</div>
+              <div class="hero-pillar-text">
+                <strong>Las herramientas de IA correctas</strong>
+                <span>No cualquier solución. Las que aplican a tu contexto y equipo.</span>
+              </div>
+            </div>
+            <div class="hero-pillar">
+              <div class="hero-pillar-icon">🤝</div>
+              <div class="hero-pillar-text">
+                <strong>Adopción real por las personas</strong>
+                <span>Equipos que adoptan IA porque entienden el para qué.</span>
+              </div>
+            </div>
+            <div class="hero-pillar">
+              <div class="hero-pillar-icon">⚖️</div>
+              <div class="hero-pillar-text">
+                <strong>Gobernanza y criterios claros</strong>
+                <span>Marcos para decidir bien, sin frenar el avance.</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-quote">
+            <p>"Si buscas implementar herramientas rápido, este enfoque no es para ti. Si buscas <strong>resultados sostenibles</strong>, hablemos."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRUST ─────────────────────────────────────── -->
+<div class="trust">
+  <div class="container">
+    <div class="trust-inner">
+      <span class="trust-label">Trabajamos con</span>
+      <span class="trust-item">Gerentes Generales</span>
+      <span class="trust-sep">·</span>
+      <span class="trust-item">Líderes de Transformación Digital</span>
+      <span class="trust-sep">·</span>
+      <span class="trust-item">Equipos Ejecutivos</span>
+      <span class="trust-sep">·</span>
+      <span class="trust-item">Empresas medianas y grandes</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROBLEMA ──────────────────────────────────── -->
+<section class="section section--alt" id="problema">
+  <div class="container">
+    <div class="problema-grid">
+      <div class="problema-left reveal">
+        <span class="chip chip--purple">El problema real</span>
+        <h2>Muchas organizaciones avanzan con IA. Pocas lo hacen bien.</h2>
+        <p>El problema no es la tecnología. Es hacerlo <strong>sin claridad, sin foco y sin preparación organizacional.</strong></p>
+        <p>Eso termina en inversiones mal priorizadas, equipos sobrecargados y resultados que no se sostienen.</p>
+        <div class="problema-items">
+          <div class="problema-item">
+            <span class="pi-icon">⚡</span>
+            <div class="pi-body">
+              <strong>Iniciativas desconectadas</strong>
+              <span>Proyectos de IA que no se hablan entre sí y no impactan el negocio real.</span>
+            </div>
+          </div>
+          <div class="problema-item">
+            <span class="pi-icon">😰</span>
+            <div class="pi-body">
+              <strong>Resistencia cultural</strong>
+              <span>Equipos que no adoptan porque nadie les explicó el para qué.</span>
+            </div>
+          </div>
+          <div class="problema-item">
+            <span class="pi-icon">🔧</span>
+            <div class="pi-body">
+              <strong>Herramientas mal elegidas</strong>
+              <span>Soluciones adoptadas por moda, no por criterio de negocio ni capacidad real del equipo.</span>
+            </div>
+          </div>
+          <div class="problema-item">
+            <span class="pi-icon">🎯</span>
+            <div class="pi-body">
+              <strong>Falta de criterio para decidir</strong>
+              <span>No saber qué va primero, qué no vale la pena y por qué.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="insight-box">
+          <blockquote>"La IA no necesita urgencia.<br/><em>Necesita orden.</em>"</blockquote>
+          <p>Las organizaciones que logran resultados con IA no parten por herramientas. Parten por orden, criterio y decisiones claras. Eso es lo que estructuramos juntos, con acompañamiento real en cada etapa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACOMPAÑAMIENTO ─────────────────────────────── -->
+<section class="section" id="acompanamiento">
+  <div class="container">
+    <div class="acomp-grid">
+      <div class="reveal">
+        <div class="acomp-visual">
+          <div class="acomp-visual-title">Nuestro acompañamiento incluye, entre otros</div>
+          <div class="acomp-tags">
+            <span class="acomp-tag"><span class="dot dot--navy"></span>Estrategia de IA</span>
+            <span class="acomp-tag"><span class="dot dot--purple"></span>Herramientas correctas para tu contexto</span>
+            <span class="acomp-tag"><span class="dot dot--navy"></span>Hoja de ruta integrada</span>
+            <span class="acomp-tag"><span class="dot dot--orange"></span>Casos de uso priorizados</span>
+            <span class="acomp-tag"><span class="dot dot--purple"></span>Gobernanza mínima viable</span>
+            <span class="acomp-tag"><span class="dot dot--navy"></span>Criterios de decisión</span>
+            <span class="acomp-tag"><span class="dot dot--purple"></span>Adopción organizacional</span>
+            <span class="acomp-tag"><span class="dot dot--orange"></span>Formación de equipos</span>
+            <span class="acomp-tag"><span class="dot dot--navy"></span>Benchmarks de industria</span>
+            <span class="acomp-tag"><span class="dot dot--purple"></span>Experimentación controlada</span>
+          </div>
+        </div>
+      </div>
+      <div class="acomp-text reveal">
+        <span class="chip chip--navy">Acompañamiento estratégico</span>
+        <h2>No solo proyectos.<br/>Acompañamiento real.</h2>
+        <p>AdapKi no llega a implementar una herramienta y se va. Acompañamos a los líderes a <strong>decidir con criterio</strong>, a elegir las herramientas de IA correctas para su contexto y a que la organización las adopte de verdad.</p>
+        <div class="acomp-list">
+          <div class="acomp-item">
+            <div class="acomp-dot"></div>
+            <div class="acomp-item-text"><strong>Compartimos la carga cognitiva.</strong> No tienes que tener todas las respuestas sobre IA. Para eso estamos.</div>
+          </div>
+          <div class="acomp-item">
+            <div class="acomp-dot"></div>
+            <div class="acomp-item-text"><strong>Lenguaje ejecutivo, sin tecnicismos.</strong> Hablamos el idioma del negocio, no el de la tecnología.</div>
+          </div>
+          <div class="acomp-item">
+            <div class="acomp-dot"></div>
+            <div class="acomp-item-text"><strong>Criterio antes que herramientas.</strong> Primero ordenamos el problema. Luego elegimos qué usar.</div>
+          </div>
+          <div class="acomp-item">
+            <div class="acomp-dot"></div>
+            <div class="acomp-item-text"><strong>Enfoque en personas.</strong> La tecnología no adopta sola. Trabajamos con los equipos que la usarán.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICIOS ──────────────────────────────────── -->
+<section class="section section--alt" id="servicios">
+  <div class="container">
+    <span class="chip chip--purple section-label">Lo que hacemos</span>
+    <h2 class="section-title">Servicios para quienes<br/>toman decisiones sobre IA</h2>
+    <p class="section-sub">No vendemos tecnología. Ayudamos a decidir mejor sobre IA, a adoptarla con criterio y a medir su impacto real en el negocio.</p>
+    <div class="services-grid">
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--navy"></div>
+        <div class="svc-icon svc-icon--navy">🗺️</div>
+        <h3>Estrategia y Roadmap de IA</h3>
+        <p>Diseñamos el camino de adopción de IA integrado a la estrategia del negocio. Qué va primero, qué no y por qué, con criterio ejecutivo y horizonte claro.</p>
+      </div>
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--purple"></div>
+        <div class="svc-icon svc-icon--purple">🧩</div>
+        <h3>Portafolio Lean de Casos de Uso IA</h3>
+        <p>Identificamos y priorizamos los casos de uso con mayor impacto y menor riesgo. Rápidos, medibles y replicables para demostrar valor sin sobrecarga.</p>
+      </div>
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--navy"></div>
+        <div class="svc-icon svc-icon--navy">⚖️</div>
+        <h3>Gobernanza, Políticas y Criterios de Decisión IA</h3>
+        <p>Marcos de gobernanza mínima viable que bajan el riesgo sin frenar el avance. Criterios claros para que toda la organización sepa cómo decidir sobre IA.</p>
+      </div>
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--orange"></div>
+        <div class="svc-icon svc-icon--orange">🤝</div>
+        <h3>Acompañamiento Ejecutivo</h3>
+        <p>Acompañamos a líderes a decidir con confianza sobre IA, incluyendo la elección de las herramientas correctas para su organización y contexto real.</p>
+      </div>
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--purple"></div>
+        <div class="svc-icon svc-icon--purple">🎤</div>
+        <h3>Foro de Conferencistas IA de la Industria</h3>
+        <p>Experiencias de aprendizaje ejecutivo con referentes reales. Contexto de mercado, benchmarks y conversaciones que generan criterio propio.</p>
+      </div>
+
+      <div class="svc reveal">
+        <div class="svc-bar svc-bar--navy"></div>
+        <div class="svc-icon svc-icon--navy">🎓</div>
+        <h3>Webinars IA</h3>
+        <p>Formación práctica para equipos de distintos perfiles. Sin jerga técnica. Con aplicación directa al rol de cada participante y a las herramientas que realmente usarán.</p>
+      </div>
+
+      <div class="svc reveal" style="grid-column: 1 / -1; max-width: 360px; margin: 0 auto;">
+        <div class="svc-bar svc-bar--orange"></div>
+        <div class="svc-icon svc-icon--orange">🔬</div>
+        <h3>Laboratorio de Experimentación IA</h3>
+        <p>Espacio controlado para probar, aprender y validar iniciativas de IA antes de escalarlas. Reduce el riesgo y acelera la curva de adopción organizacional.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PERFILES ───────────────────────────────────── -->
+<section class="section" id="perfiles">
+  <div class="container">
+    <span class="chip chip--navy section-label">¿Es esto para ti?</span>
+    <h2 class="section-title">Diseñado para quienes<br/>lideran la transformación</h2>
+    <p class="section-sub">Trabajamos con líderes que quieren avanzar con IA de forma real, ordenada y sostenible. No con cualquier organización.</p>
+    <div class="profiles-grid">
+      <div class="profile reveal">
+        <div class="profile-top">
+          <div class="profile-emoji profile-emoji--navy">🧠</div>
+          <div>
+            <h3>Gerente / Subgerente de Transformación Digital</h3>
+            <p>El que ejecuta y necesita demostrar resultados</p>
+          </div>
+        </div>
+        <div class="profile-accent profile-accent--navy"></div>
+        <ul class="profile-list">
+          <li><span class="profile-arrow">→</span> Quiere resultados visibles sin quedar expuesto frente a jefaturas y sponsors.</li>
+          <li><span class="profile-arrow">→</span> Necesita orden estratégico, no más iniciativas sueltas.</li>
+          <li><span class="profile-arrow">→</span> Carga con la expectativa de tener todas las respuestas sobre IA.</li>
+          <li><span class="profile-arrow">→</span> Busca que sus equipos adopten IA voluntariamente, con las herramientas correctas.</li>
+          <li><span class="profile-arrow">→</span> Necesita una hoja de ruta integrada al negocio, no paralela.</li>
+        </ul>
+      </div>
+      <div class="profile reveal">
+        <div class="profile-top">
+          <div class="profile-emoji profile-emoji--purple">🏢</div>
+          <div>
+            <h3>Gerente General / CEO</h3>
+            <p>El que decide y necesita claridad estratégica</p>
+          </div>
+        </div>
+        <div class="profile-accent profile-accent--purple"></div>
+        <ul class="profile-list profile--navy">
+          <li><span class="profile-arrow" style="color:var(--purple)">→</span> Necesita demostrar al directorio resultados concretos, no promesas tecnológicas.</li>
+          <li><span class="profile-arrow" style="color:var(--purple)">→</span> Gestiona la tensión entre innovar y mantener la operación estable.</li>
+          <li><span class="profile-arrow" style="color:var(--purple)">→</span> Debe alinear múltiples gerencias en torno a una visión única de IA.</li>
+          <li><span class="profile-arrow" style="color:var(--purple)">→</span> Enfrenta resistencia organizacional que frena la adopción real.</li>
+          <li><span class="profile-arrow" style="color:var(--purple)">→</span> Busca una estrategia de IA que unifique y que incluya las herramientas adecuadas para su industria.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CÓMO TRABAJAMOS ────────────────────────────── -->
+<section class="section section--alt" id="como">
+  <div class="container">
+    <span class="chip chip--purple section-label">Cómo trabajamos</span>
+    <h2 class="section-title">Un camino razonable,<br/>no una promesa vacía</h2>
+    <p class="section-sub">Cada proceso comienza por ordenar el problema, luego definir el criterio y sólo después elegir las herramientas. Siempre con acompañamiento real.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h4>Diagnóstico ejecutivo</h4>
+        <p>Entendemos dónde está la organización hoy, qué frena el avance y cuál es el punto de mayor apalancamiento para comenzar.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h4>Orden estratégico</h4>
+        <p>Definimos qué iniciativas van primero y con qué criterio. Portafolio priorizado, hoja de ruta integrada y gobernanza mínima viable.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h4>Herramientas correctas y adopción</h4>
+        <p>Seleccionamos las herramientas de IA que aplican al contexto real del equipo. Luego acompañamos la adopción centrada en personas.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <h4>Seguimiento y escala</h4>
+        <p>Lo que funciona se consolida y escala. Lo que no, se descarta a tiempo. Avance continuo y controlado, con acompañamiento en cada etapa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUOTE ──────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="quote-wrap reveal">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">Las organizaciones que logran resultados con IA no parten por herramientas. Parten por orden, criterio y decisiones claras.</p>
+      <p class="quote-author">— Filosofía de trabajo AdapKi</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── EQUIPO ─────────────────────────────────────── -->
+<section class="section section--alt" id="equipo">
+  <div class="container">
+    <span class="chip chip--navy section-label">Quiénes somos</span>
+    <h2 class="section-title">Las personas detrás<br/>del criterio</h2>
+    <p class="section-sub">AdapKi nació de la convicción de que la IA debe adoptarse con orden y con las personas en el centro. No desde el hype, sino desde la estrategia.</p>
+    <div class="team-wrap">
+      <div class="team-card reveal">
+        <div class="team-avatar">HG</div>
+        <h3>Heileen Goodson</h3>
+        <div class="team-role">Co-fundadora</div>
+        <p>Especialista en adopción organizacional de IA y transformación cultural. Acompaña a líderes ejecutivos a decidir con criterio en contextos de alta incertidumbre tecnológica.</p>
+        <a href="https://www.linkedin.com/in/heileengoodson/" target="_blank" class="team-linkedin">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Ver perfil LinkedIn
+        </a>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-avatar">PV</div>
+        <h3>Paulina Valenzuela</h3>
+        <div class="team-role">Co-fundadora</div>
+        <p>Estratega en adopción de IA e innovación organizacional. Diseña marcos de gobernanza y hojas de ruta que conectan la estrategia con el impacto real del negocio.</p>
+        <a href="https://www.linkedin.com/in/paulinadixianavalenzuelasanchez/" target="_blank" class="team-linkedin">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Ver perfil LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────── -->
+<section class="cta-sec" id="contacto">
+  <div class="container">
+    <span class="chip" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);margin-bottom:18px;">¿Listo para ordenar el problema?</span>
+    <h2>Una conversación para empezar.<br/>Sin venta. Sin hype.</h2>
+    <p>Si estás evaluando cómo avanzar con IA sin improvisar, agenda una sesión ejecutiva. No es una presentación comercial. Es una conversación para ordenar el problema de tu organización y definir el camino correcto.</p>
+    <div class="cta-actions">
+      <a href="mailto:hola@adapki.com" class="btn btn-white">Agenda una sesión ejecutiva</a>
+      <a href="mailto:hola@adapki.com" class="btn" style="background:transparent;color:rgba(255,255,255,.85);border:2px solid rgba(255,255,255,.3);">Escríbenos directamente</a>
+    </div>
+    <p class="cta-note">Si buscas implementar herramientas rápido, este enfoque no es para ti.</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">Adap<span class="ki">Ki</span></div>
+        <p>Acompañamiento estratégico en IA para líderes organizacionales. Con criterio, con orden y con las personas en el centro.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="#servicios">Estrategia y Roadmap IA</a></li>
+          <li><a href="#servicios">Portafolio Lean de IA</a></li>
+          <li><a href="#servicios">Gobernanza IA</a></li>
+          <li><a href="#servicios">Acompañamiento Ejecutivo</a></li>
+          <li><a href="#servicios">Webinars IA</a></li>
+          <li><a href="#servicios">Laboratorio de IA</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#equipo">Equipo</a></li>
+          <li><a href="#como">Cómo trabajamos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="mailto:hola@adapki.com">hola@adapki.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AdapKi SpA · RUT 77.993.349-0</span>
+      <span>Acompañamiento estratégico en IA con criterio</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
